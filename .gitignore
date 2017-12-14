@@ -1,0 +1,7 @@
+config/local/mnemonic
+config/rinkeby/mnemonic
+config/kovan/mnemonic
+config/ropsten/mnemonic
+config/secrets/infura-token.js
+
+node_modules/
