@@ -19,14 +19,7 @@ contract VestingWallet is Ownable, SafeMath {
         uint endTimeInSec,
         uint totalAmount
     );
-    event VestingScheduleConfirmed(
-        address indexed registeredAddress,
-        address depositor,
-        uint startTimeInSec,
-        uint cliffTimeInSec,
-        uint endTimeInSec,
-        uint totalAmount
-    );
+ 
     event Withdrawal(address indexed registeredAddress, uint amountWithdrawn);
     event VestingEndedByOwner(address indexed registeredAddress, uint amountWithdrawn, uint amountRefunded);
     event AddressChangeRequested(address indexed oldRegisteredAddress, address indexed newRegisteredAddress);
@@ -122,47 +115,12 @@ contract VestingWallet is Ownable, SafeMath {
             totalAmount: _totalAmount,
             totalAmountWithdrawn: 0,
             depositor: _depositor,
-            isConfirmed: false
+            isConfirmed: true
         });
 
         VestingScheduleRegistered(
             _addressToRegister,
             _depositor,
-            _startTimeInSec,
-            _cliffTimeInSec,
-            _endTimeInSec,
-            _totalAmount
-        );
-    }
-
-    /// @dev Confirms a vesting schedule and deposits necessary tokens. Throws if deposit fails or schedules do not match.
-    /// @param _startTimeInSec The time in seconds that vesting began.
-    /// @param _cliffTimeInSec The time in seconds that tokens become withdrawable.
-    /// @param _endTimeInSec The time in seconds that vesting ends.
-    /// @param _totalAmount The total amount of tokens that the registered address can withdraw by the end of the vesting period.
-    function confirmVestingSchedule(
-        uint _startTimeInSec,
-        uint _cliffTimeInSec,
-        uint _endTimeInSec,
-        uint _totalAmount
-    )
-        public
-        addressRegistered(msg.sender)
-        vestingScheduleNotConfirmed(msg.sender)
-    {
-        VestingSchedule storage vestingSchedule = schedules[msg.sender];
-
-        require(vestingSchedule.startTimeInSec == _startTimeInSec);
-        require(vestingSchedule.cliffTimeInSec == _cliffTimeInSec);
-        require(vestingSchedule.endTimeInSec == _endTimeInSec);
-        require(vestingSchedule.totalAmount == _totalAmount);
-
-        vestingSchedule.isConfirmed = true;
-        require(vestingToken.transferFrom(vestingSchedule.depositor, address(this), _totalAmount));
-
-        VestingScheduleConfirmed(
-            msg.sender,
-            vestingSchedule.depositor,
             _startTimeInSec,
             _cliffTimeInSec,
             _endTimeInSec,
@@ -257,7 +215,9 @@ contract VestingWallet is Ownable, SafeMath {
         internal
         returns (uint)
     {
-        if (block.timestamp >= vestingSchedule.endTimeInSec) return vestingSchedule.totalAmount;
+        if (block.timestamp >= vestingSchedule.endTimeInSec) {
+            return vestingSchedule.totalAmount;
+        } 
 
         uint timeSinceStartInSec = safeSub(block.timestamp, vestingSchedule.startTimeInSec);
         uint totalVestingTimeInSec = safeSub(vestingSchedule.endTimeInSec, vestingSchedule.startTimeInSec);
