@@ -1,26 +1,25 @@
 {
-    "name": "fundrequest-vesting-wallets",
-    "version": "0.0.1",
-    "description": "Fundrequest Vesting Wallets",
-    "scripts": {
-      "test": "truffle test",
-      "coverage": "solidity-coverage"
-    },
-    "author": "Fundrequest",
-    "license": "MIT",
-    "devDependencies": {
-      "ethereumjs-testrpc": "^4.0.1",
-      "gulp": "^3.9.1",
-      "gulp-concat": "^2.6.1",
-      "mocha": "^2.2.5",
-      "solidity-coverage": "^0.2.1",
-      "truffle": "^4.0.1",
-      "solium": "^0.5.4",
-      "truffle-hdwallet-provider": "0.0.3",
-      "chai": "^3.5.0",
-      "truffle-contract": "^3.0.1",
-      "web3": "^0.20.0"
-    },
-    "dependencies": {}
-  }
-  
+  "name": "fundrequest-vesting-wallets",
+  "version": "0.0.1",
+  "description": "Fundrequest Vesting Wallets",
+  "scripts": {
+    "test": "truffle test",
+    "coverage": "solidity-coverage"
+  },
+  "author": "Fundrequest",
+  "license": "MIT",
+  "devDependencies": {
+    "ethereumjs-testrpc": "^4.0.1",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "mocha": "^2.2.5",
+    "solidity-coverage": "^0.2.1",
+    "truffle": "^4.0.4",
+    "solium": "^0.5.4",
+    "truffle-hdwallet-provider": "0.0.3",
+    "chai": "^3.5.0",
+    "truffle-contract": "^3.0.1",
+    "web3": "^0.20.0"
+  },
+  "dependencies": {}
+}

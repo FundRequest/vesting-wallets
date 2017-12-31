@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.18;
 
 import "../ownership/Ownable.sol";
 import "../erc20/Token.sol";
@@ -9,7 +9,7 @@ contract VestingWallet is Ownable, SafeMath {
     mapping(address => VestingSchedule) public schedules;        // vesting schedules for given addresses
     mapping(address => address) public addressChangeRequests;    // requested address changes
 
-    Token vestingToken;
+    Token public vestingToken;
 
     event VestingScheduleRegistered(
         address indexed registeredAddress,
@@ -195,6 +195,7 @@ contract VestingWallet is Ownable, SafeMath {
     /// @return Total tokens vested for a vesting schedule.
     function getTotalAmountVested(VestingSchedule vestingSchedule)
         internal
+        view
         returns (uint)
     {
         if (block.timestamp >= vestingSchedule.endTimeInSec) {
