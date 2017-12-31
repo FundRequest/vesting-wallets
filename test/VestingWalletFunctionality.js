@@ -34,11 +34,19 @@ contract('VestingWallet', async function (accounts) {
         expect(depositor).to.equal(crowdsale);
     });
 
-    /*
-    it('should not be possible to register a schedule as non-owner', async => {
-        
+    it('should not be possible to register a schedule as non-owner', async function() {
+        try {
+            let result = await vesting.registerVestingSchedule(accounts[2], crowdsale, 0,  20, 40, (10 * Math.pow(10, 18)),  { from: crowdsale });
+            expect.fail('should never be able to register as non-owner');
+        } catch(error) {
+            assert(
+                error.message.indexOf('revert') >= 0,
+                'executing as non_owner should fail.'
+            );
+        }
     });
 
+    /*
 
     it('should not be possible to register a vesting schedule for 0-address', async => {
         
