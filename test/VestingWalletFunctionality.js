@@ -46,13 +46,41 @@ contract('VestingWallet', async function (accounts) {
         }
     });
 
-    /*
 
-    it('should not be possible to register a vesting schedule for 0-address', async => {
-        
+    it('should not be possible to register a vesting schedule for 0-address', async function() {
+        try {
+            let result = await vesting.registerVestingSchedule(accounts[2], '0x0000000000000000000000000000000000000000', 0,  20, 40, (10 * Math.pow(10, 18)),  { from: owner });
+            expect.fail('should never be able to register as 0-user');
+        } catch(error) {
+            assert(
+                error.message.indexOf('revert') >= 0,
+                'this should fail.'
+            );
+        }
     });
 
-    it('should not be possible to register a vesting schedule with invalid times', async => {
-        
-    }); */
+
+    it('should not be possible to register a vesting schedule with invalid times', async function() {
+        try {
+            let result = await vesting.registerVestingSchedule(accounts[2], crowdsale, 10, 9, 20, (10 * Math.pow(10, 18)),  { from: owner });
+            expect.fail('should never be able to register with a cliff time less than start-time');
+        } catch(error) {
+            assert(
+                error.message.indexOf('revert') >= 0,
+                'this should fail.'
+            );
+        }
+    }); 
+
+    it('should not be possible to register a vesting schedule with invalid times', async function() {
+        try {
+            let result = await vesting.registerVestingSchedule(accounts[2], crowdsale, 0, 40, 20, (10 * Math.pow(10, 18)),  { from: owner });
+            expect.fail('should never be able to register with an end time less than cliff-time');
+        } catch(error) {
+            assert(
+                error.message.indexOf('revert') >= 0,
+                'this should fail.'
+            );
+        }
+    }); 
 });
