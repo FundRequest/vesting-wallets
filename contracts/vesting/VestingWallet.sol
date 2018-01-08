@@ -10,7 +10,8 @@ contract VestingWallet is Ownable, SafeMath {
     mapping(address => address) public addressChangeRequests;    // requested address changes
 
     Token public vestingToken;
-
+    address public depositOwner;
+    
     event VestingScheduleRegistered(
         address indexed registeredAddress,
         address depositor,
@@ -72,6 +73,7 @@ contract VestingWallet is Ownable, SafeMath {
     /// @param _vestingToken Token that will be vested.
     function VestingWallet(address _vestingToken) {
         vestingToken = Token(_vestingToken);
+        depositOwner = msg.sender;        
     }
 
     function registerVestingScheduleWithPercentage(
@@ -208,6 +210,10 @@ contract VestingWallet is Ownable, SafeMath {
         delete addressChangeRequests[_oldRegisteredAddress];
 
         AddressChangeConfirmed(_oldRegisteredAddress, _newRegisteredAddress);
+    }
+
+    function updateDepositOwner(address _newDepositOwner) public onlyOwner addressNotNull(_newDepositOwner) {
+        depositOwner = _newDepositOwner;
     }
 
     /// @dev Calculates the total tokens that have been vested for a vesting schedule, assuming the schedule is past the cliff.
