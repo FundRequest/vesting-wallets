@@ -83,4 +83,40 @@ contract('VestingWallet', async function (accounts) {
             );
         }
     }); 
+
+    it('is possible to register using a percentage', async function(){
+        let result = await vesting.registerVestingScheduleWithPercentage(accounts[3], crowdsale, 0, 1, 2, (10 * Math.pow(10, 18)), 50, {from: owner});
+        let schedule = await vesting.schedules.call(accounts[3]);
+
+        let startTimeInSec = schedule[0].toNumber();
+        let cliffTimeInSec = schedule[1].toNumber();
+        let endTimeInSec = schedule[2].toNumber();
+        let totalAmount = schedule[3].toNumber();
+        let totalAmountWithdrawn = schedule[4].toNumber();
+        let depositor = schedule[5];
+
+        expect(startTimeInSec).to.equal(0);
+        expect(cliffTimeInSec).to.equal(1);
+        expect(endTimeInSec).to.equal(2);
+        expect(totalAmount).to.equal(5 * Math.pow(10, 18));
+        expect(totalAmountWithdrawn).to.equal(0);
+        expect(depositor).to.equal(crowdsale);
+    });
+
+
+    it('should be rounded down when registering with undividable percentage', async function(){
+        let result = await vesting.registerVestingScheduleWithPercentage(accounts[3], crowdsale, 0, 1, 2, 1, 50, {from: owner});
+        let schedule = await vesting.schedules.call(accounts[3]);
+
+        let totalAmount = schedule[3].toNumber();
+        expect(totalAmount).to.equal(0);
+    });
+
+    it('should not round with dividable percentage', async function(){
+        let result = await vesting.registerVestingScheduleWithPercentage(accounts[4], crowdsale, 0, 1, 2, 2, 50, {from: owner});
+        let schedule = await vesting.schedules.call(accounts[4]);
+
+        let totalAmount = schedule[3].toNumber();
+        expect(totalAmount).to.equal(1);
+    });
 });

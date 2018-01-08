@@ -74,6 +74,26 @@ contract VestingWallet is Ownable, SafeMath {
         vestingToken = Token(_vestingToken);
     }
 
+    function registerVestingScheduleWithPercentage(
+        address _addressToRegister,
+        address _depositor,
+        uint _startTimeInSec,
+        uint _cliffTimeInSec,
+        uint _endTimeInSec,
+        uint _totalAmount,
+        uint _percentage
+    ) 
+        public 
+        onlyOwner
+        addressNotNull(_depositor)
+        validVestingScheduleTimes(_startTimeInSec, _cliffTimeInSec, _endTimeInSec)
+    {
+        uint vestedAmount = safeDiv(safeMul(
+            _totalAmount, 50 
+        ), 100);
+        registerVestingSchedule(_addressToRegister, _depositor, _startTimeInSec, _cliffTimeInSec, _endTimeInSec, vestedAmount);
+    }
+
     /// @dev Registers a vesting schedule to an address.
     /// @param _addressToRegister The address that is allowed to withdraw vested tokens for this schedule.
     /// @param _depositor Address that will be depositing vesting token.
