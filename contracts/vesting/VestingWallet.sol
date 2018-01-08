@@ -91,7 +91,7 @@ contract VestingWallet is Ownable, SafeMath {
         validVestingScheduleTimes(_startTimeInSec, _cliffTimeInSec, _endTimeInSec)
     {
         uint vestedAmount = safeDiv(safeMul(
-            _totalAmount, 50 
+            _totalAmount, _percentage 
         ), 100);
         registerVestingSchedule(_addressToRegister, _depositor, _startTimeInSec, _cliffTimeInSec, _endTimeInSec, vestedAmount);
     }
