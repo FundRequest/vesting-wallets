@@ -1,6 +1,8 @@
 pragma solidity ^0.4.18;
 
+
 import "./Token.sol";
+
 
 contract StandardToken is Token {
 
@@ -11,7 +13,8 @@ contract StandardToken is Token {
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
             return true;
-        } else { return false; }
+        }
+        else {return false;}
     }
 
     function transferFrom(address _from, address _to, uint _value) returns (bool success) {
@@ -21,7 +24,8 @@ contract StandardToken is Token {
             allowed[_from][msg.sender] -= _value;
             Transfer(_from, _to, _value);
             return true;
-        } else { return false; }
+        }
+        else {return false;}
     }
 
     function balanceOf(address _owner) constant returns (uint balance) {
@@ -39,6 +43,8 @@ contract StandardToken is Token {
     }
 
     mapping (address => uint) balances;
+
     mapping (address => mapping (address => uint)) allowed;
+
     uint public totalSupply;
 }
