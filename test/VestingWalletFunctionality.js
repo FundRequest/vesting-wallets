@@ -104,6 +104,24 @@ contract('VestingWallet', function (accounts) {
 		expect(depositor).to.equal(crowdsale);
 	});
 
+	it('it should not be possible ', async function () {
+		try {
+			await vesting.registerVestingScheduleWithPercentage(accounts[3], crowdsale, 0, 1, 2, 1, 110, {from: owner});
+		} catch (error) {
+			assert(
+				error.message.indexOf('revert') >= 0,
+				'this should fail.'
+			);
+		}
+	});
+
+	it('should be possible to use 100%', async function () {
+		await vesting.registerVestingScheduleWithPercentage(accounts[3], crowdsale, 0, 1, 2, 14, 100, {from: owner});
+		let schedule = await vesting.schedules.call(accounts[3]);
+
+		let totalAmount = schedule[3].toNumber();
+		expect(totalAmount).to.equal(14);
+	});
 
 	it('should be rounded down when registering with undividable percentage', async function () {
 		await vesting.registerVestingScheduleWithPercentage(accounts[3], crowdsale, 0, 1, 2, 1, 50, {from: owner});
