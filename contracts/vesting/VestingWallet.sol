@@ -30,9 +30,6 @@ contract VestingWallet is Ownable, SafeMath {
 
     event AddressChangeConfirmed(address indexed oldRegisteredAddress, address indexed newRegisteredAddress);
 
-    event LOG(uint log);
-
-
     struct VestingSchedule {
         uint startTimeInSec;
         uint cliffTimeInSec;
