@@ -34,12 +34,12 @@ contract VestingWallet is Ownable, SafeMath {
 
 
     struct VestingSchedule {
-    uint startTimeInSec;
-    uint cliffTimeInSec;
-    uint endTimeInSec;
-    uint totalAmount;
-    uint totalAmountWithdrawn;
-    address depositor;
+        uint startTimeInSec;
+        uint cliffTimeInSec;
+        uint endTimeInSec;
+        uint totalAmount;
+        uint totalAmountWithdrawn;
+        address depositor;
     }
 
     modifier addressRegistered(address target) {
