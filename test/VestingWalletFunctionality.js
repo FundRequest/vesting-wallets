@@ -186,4 +186,13 @@ contract('VestingWallet', function (accounts) {
 		let totalAmount = schedule[3].toNumber();
 		expect(totalAmount).to.equal(1);
 	});
+
+	it('should by the sender\'s address by default', async function () {
+		expect(await vesting.approvedWallet.call()).to.equal(owner);
+	});
+
+	it('should be possible to update approvedWallet', async function () {
+		await vesting.setApprovedWallet(crowdsale);
+		expect(await vesting.approvedWallet.call()).to.equal(crowdsale);
+	});
 });

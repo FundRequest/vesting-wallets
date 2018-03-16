@@ -3,19 +3,20 @@ const Token = artifacts.require('./erc20/StubToken.sol');
 
 const expect = require('chai').expect;
 
-contract('VestingWallet', function (accounts) {
+contract('TimeFunctionality', function (accounts) {
 
 	let token;
 	let vesting;
 	let owner = accounts[0];
 
 	beforeEach(async function () {
-		token = await Token.new('FundRequestToken', 'FND', 18, 100);
+		token = await Token.new('FundRequestToken', 'FND', 18, 1000 * Math.pow(10, 18));
 	});
 
 	it('should not be possible to transfer if cliff is not yet reached', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 5);
-		await token.transfer(vesting.address, 100, {from: owner});
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
+
 		await vesting.registerVestingSchedule(accounts[2], owner, 1, 5, 10, 100, {from: owner});
 
 		try {
@@ -28,7 +29,8 @@ contract('VestingWallet', function (accounts) {
 
 	it('should be possible to refund before cliff as owner', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 4);
-		await token.transfer(vesting.address, 100, {from: owner});
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
+
 		await vesting.registerVestingSchedule(accounts[2], owner, 1, 5, 10, 100, {from: owner});
 
 		await vesting.endVesting(accounts[2], accounts[3]);
@@ -38,7 +40,8 @@ contract('VestingWallet', function (accounts) {
 
 	it('should be possible to refund after cliff as owner', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 4);
-		await token.transfer(vesting.address, 100, {from: owner});
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
+
 		await vesting.registerVestingSchedule(accounts[2], owner, 1, 5, 10, 100, {from: owner});
 
 		await vesting.endVesting(accounts[2], accounts[3]);
@@ -47,8 +50,7 @@ contract('VestingWallet', function (accounts) {
 
 	it('should be possible to withdraw all of the allocation after the entire vesting period', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 1000);
-		await token.transfer(vesting.address, 100, {from: owner});
-		expect((await token.balanceOf(vesting.address)).toNumber()).to.equal(100);
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
 
 		await vesting.registerVestingSchedule(accounts[2], owner, 1, 5, 10, 50, {from: owner});
 
@@ -58,8 +60,7 @@ contract('VestingWallet', function (accounts) {
 
 	it('should be possible to withdraw part of the allocation after cliff time', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 51);
-		await token.transfer(vesting.address, 100, {from: owner});
-		expect((await token.balanceOf(vesting.address)).toNumber()).to.equal(100);
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
 
 		await vesting.registerVestingSchedule(accounts[2], owner, 0, 50, 100, 100, {from: owner});
 
@@ -70,8 +71,7 @@ contract('VestingWallet', function (accounts) {
 
 	it('should not be possible to withdraw the same amount twice', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 51);
-		await token.transfer(vesting.address, 100, {from: owner});
-		expect((await token.balanceOf(vesting.address)).toNumber()).to.equal(100);
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
 
 		await vesting.registerVestingSchedule(accounts[2], owner, 0, 50, 100, 100, {from: owner});
 
@@ -82,8 +82,7 @@ contract('VestingWallet', function (accounts) {
 
 	it('should not be possible to withdraw the remaining balance after claiming a part (ended)', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 51);
-		await token.transfer(vesting.address, 100, {from: owner});
-		expect((await token.balanceOf(vesting.address)).toNumber()).to.equal(100);
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
 
 		await vesting.registerVestingSchedule(accounts[2], owner, 0, 50, 100, 100, {from: owner});
 
@@ -97,8 +96,7 @@ contract('VestingWallet', function (accounts) {
 
 	it('should not be possible to withdraw the remaining balance after claiming a part (not ended)', async function () {
 		vesting = await VestingWalletTimeMock.new(token.address, 51);
-		await token.transfer(vesting.address, 100, {from: owner});
-		expect((await token.balanceOf(vesting.address)).toNumber()).to.equal(100);
+		await token.approve(vesting.address, 100 * Math.pow(10, 18), {from: owner});
 
 		await vesting.registerVestingSchedule(accounts[2], owner, 0, 50, 100, 100, {from: owner});
 
