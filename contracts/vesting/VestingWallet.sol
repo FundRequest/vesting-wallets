@@ -8,21 +8,22 @@ import "../math/SafeMath.sol";
 
 contract VestingWallet is Ownable, SafeMath {
 
-    mapping (address => VestingSchedule) public schedules;        // vesting schedules for given addresses
-    mapping (address => address) public addressChangeRequests;    // requested address changes
+    mapping(address => VestingSchedule) public schedules;        // vesting schedules for given addresses
+    mapping(address => address) public addressChangeRequests;    // requested address changes
 
     Token public vestingToken;
 
     address public approvedWallet;
 
     event VestingScheduleRegistered(
-    address indexed registeredAddress,
-    address depositor,
-    uint startTimeInSec,
-    uint cliffTimeInSec,
-    uint endTimeInSec,
-    uint totalAmount
+        address indexed registeredAddress,
+        address depositor,
+        uint startTimeInSec,
+        uint cliffTimeInSec,
+        uint endTimeInSec,
+        uint totalAmount
     );
+
 
     event Withdrawal(address indexed registeredAddress, uint amountWithdrawn);
 
@@ -79,16 +80,17 @@ contract VestingWallet is Ownable, SafeMath {
     /// @param _vestingToken Token that will be vested.
     function VestingWallet(address _vestingToken) {
         vestingToken = Token(_vestingToken);
+        approvedWallet = msg.sender;
     }
 
     function registerVestingScheduleWithPercentage(
-    address _addressToRegister,
-    address _depositor,
-    uint _startTimeInSec,
-    uint _cliffTimeInSec,
-    uint _endTimeInSec,
-    uint _totalAmount,
-    uint _percentage
+        address _addressToRegister,
+        address _depositor,
+        uint _startTimeInSec,
+        uint _cliffTimeInSec,
+        uint _endTimeInSec,
+        uint _totalAmount,
+        uint _percentage
     )
     public
     onlyOwner
@@ -97,8 +99,8 @@ contract VestingWallet is Ownable, SafeMath {
     {
         require(_percentage <= 100);
         uint vestedAmount = safeDiv(safeMul(
-        _totalAmount, _percentage
-        ), 100);
+                _totalAmount, _percentage
+            ), 100);
         registerVestingSchedule(_addressToRegister, _depositor, _startTimeInSec, _cliffTimeInSec, _endTimeInSec, vestedAmount);
     }
 
@@ -110,12 +112,12 @@ contract VestingWallet is Ownable, SafeMath {
     /// @param _endTimeInSec The time in seconds that vesting ends.
     /// @param _totalAmount The total amount of tokens that the registered address can withdraw by the end of the vesting period.
     function registerVestingSchedule(
-    address _addressToRegister,
-    address _depositor,
-    uint _startTimeInSec,
-    uint _cliffTimeInSec,
-    uint _endTimeInSec,
-    uint _totalAmount
+        address _addressToRegister,
+        address _depositor,
+        uint _startTimeInSec,
+        uint _cliffTimeInSec,
+        uint _endTimeInSec,
+        uint _totalAmount
     )
     public
     onlyOwner
@@ -127,21 +129,21 @@ contract VestingWallet is Ownable, SafeMath {
         require(vestingToken.balanceOf(address(this)) >= _totalAmount);
 
         schedules[_addressToRegister] = VestingSchedule({
-        startTimeInSec : _startTimeInSec,
-        cliffTimeInSec : _cliffTimeInSec,
-        endTimeInSec : _endTimeInSec,
-        totalAmount : _totalAmount,
-        totalAmountWithdrawn : 0,
-        depositor : _depositor
-        });
+            startTimeInSec : _startTimeInSec,
+            cliffTimeInSec : _cliffTimeInSec,
+            endTimeInSec : _endTimeInSec,
+            totalAmount : _totalAmount,
+            totalAmountWithdrawn : 0,
+            depositor : _depositor
+            });
 
         VestingScheduleRegistered(
-        _addressToRegister,
-        _depositor,
-        _startTimeInSec,
-        _cliffTimeInSec,
-        _endTimeInSec,
-        _totalAmount
+            _addressToRegister,
+            _depositor,
+            _startTimeInSec,
+            _cliffTimeInSec,
+            _endTimeInSec,
+            _totalAmount
         );
     }
 
@@ -223,6 +225,13 @@ contract VestingWallet is Ownable, SafeMath {
         AddressChangeConfirmed(_oldRegisteredAddress, _newRegisteredAddress);
     }
 
+    function setApprovedWallet(address _approvedWallet)
+    public
+    addressNotNull(_approvedWallet)
+    onlyOwner {
+        approvedWallet = _approvedWallet;
+    }
+
     function getTime() internal view returns (uint) {
         return now;
     }
@@ -249,7 +258,7 @@ contract VestingWallet is Ownable, SafeMath {
         uint timeSinceStartInSec = safeSub(getTime(), vestingSchedule.startTimeInSec);
         uint totalVestingTimeInSec = safeSub(vestingSchedule.endTimeInSec, vestingSchedule.startTimeInSec);
         uint totalAmountVested = safeDiv(
-        safeMul(timeSinceStartInSec, vestingSchedule.totalAmount), totalVestingTimeInSec
+            safeMul(timeSinceStartInSec, vestingSchedule.totalAmount), totalVestingTimeInSec
         );
 
         return totalAmountVested;
