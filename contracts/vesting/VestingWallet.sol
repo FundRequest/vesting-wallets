@@ -13,6 +13,8 @@ contract VestingWallet is Ownable, SafeMath {
 
     Token public vestingToken;
 
+    address public approvedWallet;
+
     event VestingScheduleRegistered(
     address indexed registeredAddress,
     address depositor,
@@ -120,6 +122,10 @@ contract VestingWallet is Ownable, SafeMath {
     addressNotNull(_depositor)
     validVestingScheduleTimes(_startTimeInSec, _cliffTimeInSec, _endTimeInSec)
     {
+
+        require(vestingToken.transferFrom(approvedWallet, address(this), _totalAmount));
+        require(vestingToken.balanceOf(address(this)) >= _totalAmount);
+
         schedules[_addressToRegister] = VestingSchedule({
         startTimeInSec : _startTimeInSec,
         cliffTimeInSec : _cliffTimeInSec,
