@@ -1,4 +1,4 @@
-pragma solidity 0.4.18;
+pragma solidity ^0.4.19;
 
 
 import "../ownership/Ownable.sol";
@@ -93,6 +93,7 @@ contract VestingWallet is Ownable, SafeMath {
     addressNotNull(_depositor)
     validVestingScheduleTimes(_startTimeInSec, _cliffTimeInSec, _endTimeInSec)
     {
+        require(_percentage <= 100);
         uint vestedAmount = safeDiv(safeMul(
         _totalAmount, _percentage
         ), 100);
