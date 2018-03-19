@@ -7,6 +7,7 @@ config/secrets/infura-token.js
 node_modules/
 
 .idea
+*.iml
 
 .env
 csv
