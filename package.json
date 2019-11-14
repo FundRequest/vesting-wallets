@@ -21,6 +21,6 @@
     "ethereumjs-wallet": "^0.6.0",
     "ethjs": "^0.3.6",
     "ethjs-signer": "^0.1.1",
-    "web3": "^0.20.6"
+    "web3": "^1.2.3"
   }
 }
