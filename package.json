@@ -17,7 +17,7 @@
     "truffle-hdwallet-provider": "0.0.3",
     "chai": "^4.1.2",
     "dotenv": "^5.0.0",
-    "ethereumjs-util": "^5.1.2",
+    "ethereumjs-util": "^7.0.2",
     "ethereumjs-wallet": "^0.6.0",
     "ethjs": "^0.3.6",
     "ethjs-signer": "^0.1.1",
